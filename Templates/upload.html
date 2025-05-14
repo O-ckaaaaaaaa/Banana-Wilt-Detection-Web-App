@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Capture Image</title>
+</head>
+<body>
+    <h2>Capture Banana Leaf Image</h2>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <br>
+    <button id="snap">Capture</button>
+    <form id="uploadForm" method="POST" action="/predict" enctype="multipart/form-data">
+        <input type="hidden" name="imageData" id="imageData">
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const imageData = document.getElementById('imageData');
+
+        // Ask for camera access
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            });
+
+        document.getElementById('snap').addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, 640, 480);
+            const dataURL = canvas.toDataURL('image/jpeg');
+            imageData.value = dataURL;
+        });
+    </script>
+</body>
+</html>
